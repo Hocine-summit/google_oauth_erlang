@@ -5,7 +5,7 @@
 -define(GRANT_TYPE, <<"&grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer">>).
 -define(REQ_OPTS, [{full_result, false}, {body_format, binary}]).
 -define(JSX_OPTS, [return_maps, {labels, atom}]).
--define(HTTP_OPTS, [{timeout, 3000}]).
+-define(HTTP_OPTS, [{timeout, 3000}, {ssl, [{verify, verify_none}]}]).
 
 get_access_token(ServiceAccountFile, Scope) when is_list(Scope) ->
     get_access_token(ServiceAccountFile, erlang:list_to_binary(Scope));
