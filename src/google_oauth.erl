@@ -5,6 +5,7 @@
 -define(GRANT_TYPE, <<"&grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer">>).
 -define(REQ_OPTS, [{full_result, false}, {body_format, binary}]).
 -define(JSX_OPTS, [return_maps, {labels, atom}]).
+-define(HTTP_OPTS, [{timeout, 3000}]).
 
 get_access_token(ServiceAccountFile, Scope) when is_list(Scope) ->
     get_access_token(ServiceAccountFile, erlang:list_to_binary(Scope));
@@ -24,7 +25,7 @@ validate_token(ServiceJson, JWTToken) ->
     Body = iolist_to_binary([<<"assertion=">>, JWTToken, ?GRANT_TYPE]),
     Uri = get_uri(ServiceJson),
     Req = {Uri, [], "application/x-www-form-urlencoded", Body},
-    case httpc:request(post, Req, [], ?REQ_OPTS) of
+    case httpc:request(post, Req, ?HTTP_OPTS, ?REQ_OPTS) of
         {ok, {200, Result}} -> {ok, jsx:decode(Result, ?JSX_OPTS)};
         {ok, Reason} -> {error, Reason};
         {error, _} = Error -> Error
